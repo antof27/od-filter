@@ -1,0 +1,9 @@
+*.pt
+output_files/*.pt
+yolo_gt_embeddings/*.pt
+yolo_predicted_embeddings/*.pt
+dino_embeddings/*.pt
+playground/*.pt
+data/*.pt
+data/*.json
+weights/*.pth

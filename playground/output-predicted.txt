@@ -1,0 +1,8 @@
+Found 3506 files to convert.
+No objects found in /storage/team/EgoTracksFull/v2/yolo-world-hooks/yolo_predicted_embeddings/72f95d60-cf26-4821-8d79-4ec72c748031.pt, skipping save.
+No objects found in /storage/team/EgoTracksFull/v2/yolo-world-hooks/yolo_predicted_embeddings/809d6c60-94cd-43e9-82eb-c1091874d4fd.pt, skipping save.
+No objects found in /storage/team/EgoTracksFull/v2/yolo-world-hooks/yolo_predicted_embeddings/9a9a94fe-1beb-486c-96b9-8685a83bcb7d.pt, skipping save.
+No objects found in /storage/team/EgoTracksFull/v2/yolo-world-hooks/yolo_predicted_embeddings/a331c1d2-b19b-494b-bd2c-0a6f5d5739cf.pt, skipping save.
+
+Conversion complete!
+New files saved in: /storage/team/EgoTracksFull/v2/yolo-world-hooks/data/yolo_predicted_converted
