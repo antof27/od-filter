@@ -1,6 +1,6 @@
 import torch
 import torch.optim as optim
-from torch.utils.data import DataLoader, WeightedRandomSampler
+from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 # === MODULAR IMPORTS ===
@@ -20,19 +20,23 @@ def train_model():
     LR = 1e-5
     DEVICE = 'cuda:1' if torch.cuda.is_available() else 'cpu'
 
-    train_dataset = ImageLevelDataset(PT_FOLDER, TRAIN_JSON, num_pos=1, num_neg=1)
-    val_dataset = ImageLevelDataset(PT_FOLDER, VAL_JSON, num_pos=1, num_neg=1)
+    train_dataset = ImageLevelDataset(PT_FOLDER, TRAIN_JSON, num_pos=1, num_total=2)
+    val_dataset = ImageLevelDataset(PT_FOLDER, VAL_JSON, num_pos=1, num_total=2)
 
-    print(f"Total Training Images Found: {len(train_dataset)}")
-    print(f"Total Validation Images Found: {len(val_dataset)}")
-    print(f"Batch Size: {BATCH_SIZE}")
-    print(f"Batches per Epoch: {len(train_dataset) // BATCH_SIZE}")
-    
-    
+    # --- DATALOADERS ---
     train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, 
                               num_workers=4, collate_fn=flatten_collate_fn)
     val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False, 
                             num_workers=4, collate_fn=flatten_collate_fn)
+
+    # --- PRINT STATS ---
+    print("-" * 30)
+    print(f"Total Training Images Found: {len(train_dataset)}")
+    print(f"Total Validation Images Found: {len(val_dataset)}")
+    print(f"Batch Size: {BATCH_SIZE}")
+    print(f"Iterations per Epoch (Train): {len(train_loader)}") 
+    print(f"Iterations per Epoch (Val):   {len(val_loader)}")
+    print("-" * 30)
 
     model = EmbeddingMLP().to(DEVICE)
     criterion = FocalLoss(alpha=0.25, gamma=2)
@@ -53,7 +57,7 @@ def train_model():
             pbar = tqdm(train_loader, desc=f"Epoch {epoch+1}/{EPOCHS} [Train]")
             
             for embeddings, labels in pbar:
-                # Safety check for empty batches (if dataset filtering yields empty results)
+                # Safety check for empty batches
                 if embeddings.shape[0] == 0:
                     continue
 
@@ -77,7 +81,7 @@ def train_model():
                 correct += (predicted == labels).sum().item()
                 
                 # Update progress bar
-                current_loss = train_loss / (total / BATCH_SIZE + 1)
+                current_loss = train_loss / (pbar.n + 1) 
                 pbar.set_postfix({'loss': f"{current_loss:.4f}"})
 
             epoch_train_acc = 100 * correct / total if total > 0 else 0
@@ -110,6 +114,7 @@ def train_model():
             epoch_val_acc = 100 * val_correct / val_total if val_total > 0 else 0
             
             print(f"Summary Ep {epoch+1}: Train Acc: {epoch_train_acc:.2f}% | Val Acc: {epoch_val_acc:.2f}% | Val Loss: {avg_val_loss:.4f}")
+            
             # === UPDATE BEST SCORE ===
             if epoch_val_acc > best_val_acc:
                 best_val_acc = epoch_val_acc
@@ -118,14 +123,13 @@ def train_model():
             early_stopping(epoch_val_acc, model)
             
             if early_stopping.early_stop:
-                
                 print("Early stopping triggered. Training finished.")
                 break
 
-            print("Process Complete.")
-            print("-" * 50)
-            print(f"The best epoch was {best_epoch}, with {best_val_acc:.2f}% validation accuracy. Saved checkpoints!")
-            print("-" * 50)
+    print("Process Complete.")
+    print("-" * 50)
+    print(f"The best epoch was {best_epoch}, with {best_val_acc:.2f}% validation accuracy.")
+    print("-" * 50)
 
 if __name__ == "__main__":
     train_model()
