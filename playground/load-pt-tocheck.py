@@ -1,10 +1,10 @@
 import torch
 
-data1 = torch.load("/storage/team/EgoTracksFull/v2/yolo-world-hooks/yolo_predicted_embeddings/0a6ba0bd-d880-4a50-92e0-b1b3df278547.pt")
+data1 = torch.load("/storage/team/EgoTracksFull/v2/yolo-world-hooks/yolo_predicted_embeddings/0a6ba0bd-d880-4a50-92e0-b1b3df278547.pt", weights_only=True)
 # data2 = torch.load("/storage/team/EgoTracksFull/v2/yolo-world-hooks/data/concatenated_embeddings_with_normalized_bboxes/0a6ba0bd-d880-4a50-92e0-b1b3df278547.pt")
-data2 = torch.load("/storage/team/EgoTracksFull/v2/yolo-world-hooks/data/concat-embeds-1284/0a077a30-beec-460c-a77f-fa4196ecdc08.pt")
+data2 = torch.load("/storage/team/EgoTracksFull/v2/yolo-world-hooks/data/concat-embeds/0a077a30-beec-460c-a77f-fa4196ecdc08.pt", weights_only=True)
 
-data3 = torch.load("/storage/team/EgoTracksFull/v2/yolo-world-hooks/yolo_predicted_embeddings/72f95d60-cf26-4821-8d79-4ec72c748031.pt")
+data3 = torch.load("/storage/team/EgoTracksFull/v2/yolo-world-hooks/yolo_predicted_embeddings/72f95d60-cf26-4821-8d79-4ec72c748031.pt", weights_only=True)
 
 # data3 = torch.load("/storage/team/EgoTracksFull/v2/yolo-world-hooks/playground/gt_converted/0a6ba0bd-d880-4a50-92e0-b1b3df278547.pt")
 
@@ -14,8 +14,12 @@ data3 = torch.load("/storage/team/EgoTracksFull/v2/yolo-world-hooks/yolo_predict
 print(data2.keys())
 
 # print(data1["embeddings"][0].shape)
-print(data2["embeddings"][0].shape)
+# print(data2["embeddings"][0].shape)
 print("data2 object:ids:", data2["object_ids"][:5])
+print("data2 embeddings:", data2["embeddings"][:5])
+print("data2 bboxes:", data2["bboxes"][:5])
+print("data2 labels:", data2["labels"][:5])
+
 # print("data2 bboxes:", data2["bboxes"][:5])
 
 # len1 = len(data1["object_ids"])

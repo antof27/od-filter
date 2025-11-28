@@ -46,7 +46,7 @@ class ImageLevelDataset(Dataset):
             except Exception as e:
                 print(f"Error reading {f_path}: {e}")
                 
-        print(f"Dataset Loaded. Found {len(self.valid_images)} valid clips.")
+        print(f"Dataset Loaded. Found {len(self.valid_images)} valid samples.")
 
     def __len__(self):
         return len(self.valid_images)
@@ -72,7 +72,12 @@ class ImageLevelDataset(Dataset):
                 selected_lbls.append(0.0)
         
         if len(selected_embs) == 0:
-            return torch.zeros(1, 1280), torch.zeros(1)
+            raise ValueError(
+                f"No embeddings selected for index {idx}. "
+                f"File: {img_info['path']}. "
+                f"Available Pos: {len(img_info['pos'])}, Available Neg: {len(img_info['neg'])}. "
+                f"Requested Pos: {self.num_pos}, Requested Neg: {self.num_neg}."
+            )
 
         return torch.stack(selected_embs), torch.tensor(selected_lbls, dtype=torch.float)
 
@@ -153,7 +158,12 @@ class ImageLevelDatasetBoxes(Dataset):
                 selected_lbls.append(0.0)
         
         if len(selected_embs) == 0:
-            return torch.zeros(1, 1284), torch.zeros(1)
+            raise ValueError(
+                f"No embeddings selected for index {idx}. "
+                f"File: {img_info['path']}. "
+                f"Available Pos: {len(img_info['pos'])}, Available Neg: {len(img_info['neg'])}. "
+                f"Requested Pos: {self.num_pos}, Requested Neg: {self.num_neg}."
+            )
 
         return torch.stack(selected_embs), torch.tensor(selected_lbls, dtype=torch.float)
 

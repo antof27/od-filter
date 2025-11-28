@@ -17,7 +17,7 @@ def convert_clip_data(input_path, output_path):
     organized into flattened lists of object_ids and embeddings.
     """
     try:
-        data = torch.load(input_path, map_location='cpu')
+        data = torch.load(input_path, map_location='cpu', weights_only=True)
     except Exception as e:
         print(f"Error loading {input_path}: {e}")
         return

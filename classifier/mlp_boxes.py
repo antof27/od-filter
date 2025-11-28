@@ -28,8 +28,8 @@ def train_model():
     
     BATCH_SIZE = 1024
     EPOCHS = 200      
-    PATIENCE = 10    
-    LR = 1e-4
+    PATIENCE = 15    
+    LR = 1e-5
     DEVICE = 'cuda:2' if torch.cuda.is_available() else 'cpu'
 
     # Datasets
@@ -47,8 +47,6 @@ def train_model():
     criterion = FocalLoss(alpha=0.25, gamma=2)
     optimizer = optim.Adam(model.parameters(), lr=LR)
     
-    # --- INITIALIZE EARLY STOPPING ---
-    # mode='max' because we are monitoring Accuracy. If you monitor Loss, use mode='min'.
     early_stopping = EarlyStopping(patience=PATIENCE, verbose=True, path='best_box_aware_model.pth', mode='max')
 
     print(f"Starting Training with Early Stopping (Patience={PATIENCE})...")

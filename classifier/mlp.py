@@ -37,7 +37,10 @@ def train_model():
     model = EmbeddingMLP().to(DEVICE)
     criterion = FocalLoss(alpha=0.25, gamma=2)
     optimizer = optim.Adam(model.parameters(), lr=LR)
-    early_stopping = EarlyStopping(patience=10, verbose=True, path='/storage/team/EgoTracksFull/v2/yolo-world-hooks/weights/best_classic_mlp.pth', mode='max')
+    early_stopping = EarlyStopping(patience=15, verbose=True, path='/storage/team/EgoTracksFull/v2/yolo-world-hooks/weights/best_classic_mlp.pth', mode='max')
+
+    best_val_acc = 0.0
+    best_epoch = 0
 
     print("Starting Training...")
     for epoch in range(EPOCHS):
@@ -107,9 +110,11 @@ def train_model():
             epoch_val_acc = 100 * val_correct / val_total if val_total > 0 else 0
             
             print(f"Summary Ep {epoch+1}: Train Acc: {epoch_train_acc:.2f}% | Val Acc: {epoch_val_acc:.2f}% | Val Loss: {avg_val_loss:.4f}")
+            # === UPDATE BEST SCORE ===
+            if epoch_val_acc > best_val_acc:
+                best_val_acc = epoch_val_acc
+                best_epoch = epoch + 1
             
-            # --- EARLY STOPPING CHECK ---
-            # Pass the Validation accuracy
             early_stopping(epoch_val_acc, model)
             
             if early_stopping.early_stop:
@@ -118,6 +123,9 @@ def train_model():
                 break
 
             print("Process Complete.")
+            print("-" * 50)
+            print(f"The best epoch was {best_epoch}, with {best_val_acc:.2f}% validation accuracy. Saved checkpoints!")
+            print("-" * 50)
 
 if __name__ == "__main__":
     train_model()
