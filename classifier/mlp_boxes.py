@@ -1,34 +1,34 @@
 import torch
-import torch.nn as nn
+
 import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
 import torch.nn.functional as F
-import glob
-import os
-import json
-import random
 import numpy as np
 from tqdm import tqdm
+import sys
 
 
 from utils import EarlyStopping
 from loss import FocalLoss
 from model_wboxes import BoxAwareModel
 from dataset import ImageLevelDatasetBoxes, flatten_collate_fn
+import os 
+import sys
 
-
-
+current_dir = os.path.abspath(os.path.dirname(__file__))
+parent_dir =  os.path.abspath(os.path.join(current_dir, '..'))
+data_dir = os.path.abspath(os.path.join(parent_dir, 'data'))
 
 
 def train_model():
     # PATHS
-    PT_FOLDER = 'final_embeddings_1284'
-    TRAIN_JSON = '/storage/team/EgoTracksFull/v2/yolo-world-hooks/data/train_set.json'
-    VAL_JSON   = '/storage/team/EgoTracksFull/v2/yolo-world-hooks/data/val_set.json'
+    PT_FOLDER = os.path.join(data_dir, 'concat_embeds')
+    TRAIN_JSON = os.path.join(data_dir, 'train_set.json')
+    VAL_JSON  = os.path.join(data_dir, 'val_set.json')
     
-    BATCH_SIZE = 1024
-    EPOCHS = 200      
-    PATIENCE = 15    
+    BATCH_SIZE = 32
+    EPOCHS = 10     
+    PATIENCE = 3    
     LR = 1e-5
     DEVICE = 'cuda:2' if torch.cuda.is_available() else 'cpu'
 
